@@ -3,6 +3,7 @@ __pycache__/
 
 .env
 
-.venv
-
-tests # not ready =((
+# tests readyy
+.venv/
+.pytest_cache/
+.coverage

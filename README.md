@@ -1,6 +1,6 @@
 # URL Shortener API (FastAPI)
 
-Сервис сокращения ссылок(FastAPI)
+Сервис сокращения ссылок (FastAPI)
 
 ## Стек
 
@@ -110,7 +110,7 @@ custom_alias и expires_at опциональны.
 ```json
 {
   "short_code": "my-alias",
-  "short_url": "http://link-shorter-tirh.onrender.com/links/my-alias"
+  "short_url": "https://link-shorter-tirh.onrender.com/links/my-alias"
 }
 ```
 
@@ -155,7 +155,7 @@ GET /links/search?original_url=https://example.com/very/long/path
 
 ```bash
 curl -G "https://link-shorter-tirh.onrender.com/links/search" \
-  --data-urlencode "original_url=https://example.com/very/long/path"
+  --data-urlencode "original_url=https://ru.wikipedia.org/wiki/Боуи,_Дэвид"
 ```
 
 
@@ -177,7 +177,7 @@ PUT /links/{short_code}
 curl -X PUT "https://link-shorter-tirh.onrender.com/links/my-alias" \
   -H "Content-Type: application/json" \
   -H "x-token: <token>" \
-  -d '{"original_url":"https://example.com/new/path"}'
+  -d '{"original_url":"https://ru.wikipedia.org/wiki/Боуи,_Дэвид"}'
 ```
 
 8) Удаление ссылки
@@ -212,3 +212,27 @@ GET /admin/expired-history?limit=50
 ```bash
 curl "https://link-shorter-tirh.onrender.com/admin/expired-history?limit=50"
 ```
+
+## Тесты (ДЗ4)
+
+```bash
+pytest tests -q
+
+#Покрытие:
+
+coverage run -m pytest tests
+coverage report -m
+coverage html
+```
+
+HTML-отчет будет в htmlcov/index.html
+
+## Нагрузочное тестирование вместе с Locust
+
+Файл locustfile.py
+
+```bash
+locust -f locustfile.py --host https://link-shorter-tirh.onrender.com
+```
+
+Дальше открыть UI Locust: `http://localhost:8089'
