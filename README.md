@@ -154,5 +154,5 @@ POST /admin/cleanup-unused?days=30
 10) Дополнительно: история истекших ссылок
 
 ```http
-GET /links/expired-history?limit=50
+GET /admin/expired-history?limit=50
 ```

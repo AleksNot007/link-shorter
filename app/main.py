@@ -404,7 +404,7 @@ def cleanup_unused(days: int = Query(days)):
         db.close()
 
 
-@app.get("/links/expired-history")
+@app.get("/admin/expired-history")
 def expired_history(limit: int = Query(50)):
     data = []
     # тут пока оставлено по-простому, без with
