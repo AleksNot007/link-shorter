@@ -1,4 +1,4 @@
-from pydantic import BaseModel # с pydantic легче, есть автовалидация
+from pydantic import BaseModel  # с pydantic легче, есть автовалидация
 
 
 class RegisterReq(BaseModel):
@@ -19,4 +19,4 @@ class ShortenReq(BaseModel):
 
 class UpdateReq(BaseModel):
     original_url: str
-    #alias: 
+    # alias:

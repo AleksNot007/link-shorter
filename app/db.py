@@ -1,4 +1,4 @@
-from settings import db
+from app.settings import db
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -7,14 +7,14 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
 def init_db():
-    from models import Base
+    from app.models import Base
 
     Base.metadata.create_all(bind=engine)
 
 
 def get_db():
-    db = SessionLocal()
+    local_db = SessionLocal()
     try:
-        yield db
+        yield local_db
     finally:
-        db.close()
+        local_db.close()

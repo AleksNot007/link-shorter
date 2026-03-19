@@ -1,4 +1,3 @@
-from app.main import app
 import asyncio
 import json
 import random
@@ -7,13 +6,13 @@ import uuid
 from datetime import datetime, timedelta
 
 import redis as redis_lib
+from app.db import SessionLocal, init_db
+from app.models import ExpiredLink, Link, User
+from app.schemas import LoginReq, RegisterReq, ShortenReq, UpdateReq
+from app.settings import base, days, log_file, popular, redis, sweep
 from fastapi import FastAPI, Header, Query
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
-from db import SessionLocal, init_db
-from models import ExpiredLink, Link, User
-from schemas import LoginReq, RegisterReq, ShortenReq, UpdateReq
-from settings import base, days,log_file, popular, redis, sweep
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
@@ -54,7 +53,7 @@ def expired_tick():
         q = db.query(Link)
         notnone = Link.expires_at.isnot(None)
         lessnow = Link.expires_at <= now
-        
+
         items = q.filter(notnone, lessnow).all()
         # print("expired_tick rows:", len(items))
         for i in range(len(items)):
@@ -78,10 +77,11 @@ async def cleanup_worker_loop():
 
 
 def user_by_token(db: Session, token: str | None):
-    if token is None: return None
+    if token is None:
+        return None
     return db.query(User).filter(
         User.token == token
-        ).first()
+    ).first()
 
 
 def link_by_code(db: Session, short_code: str):
@@ -132,7 +132,7 @@ async def on_start():
     global rdb, cleanup_task
     init_db()
     rdb = redis_lib.Redis.from_url(redis, decode_responses=True)
-    cleanup_task =asyncio.create_task(cleanup_worker_loop())
+    cleanup_task = asyncio.create_task(cleanup_worker_loop())
 
 
 @app.on_event("shutdown")
@@ -168,7 +168,7 @@ def login(body: LoginReq):
     try:
         user_db = db.query(User)
         user = user_db.filter(
-            User.username == body.username).first() 
+            User.username == body.username).first()
         if user is None:
             raise HTTPException(status_code=404, detail="user not found")
         if user.password != body.password:
@@ -206,7 +206,7 @@ def shorten(data: ShortenReq, token=Header(None)):
             if hit is not None:
                 raise HTTPException(status_code=409, detail="alias exists")
         else:
-            chars = string.ascii_letters+string.digits
+            chars = string.ascii_letters + string.digits
             tries = 0
             while True:
                 tries += 1
